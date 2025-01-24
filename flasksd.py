@@ -5,8 +5,10 @@ import requests
 
 app = Flask(__name__)
 CORS(app)
-
-@app.route('/stream')
+@app.route('/')
+def home():
+    return "Go to Stream"
+@app.route('/stream')    
 def stream_video():
     try:
         # Set up yt-dlp options
