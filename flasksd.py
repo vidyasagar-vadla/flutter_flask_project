@@ -21,7 +21,7 @@ def stream_video():
 
         # Use yt-dlp to fetch the video stream URL
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            video_url = f'https://www.youtube.com/watch?v=EUGQ0FXqYfQ'
+            video_url = f'https://www.youtube.com/watch?v=LNYm40RmRzs'
             info_dict = ydl.extract_info(video_url, download=False)
             video_url = info_dict['url']  # Get the direct video URL
 
