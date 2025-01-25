@@ -10,26 +10,15 @@ CORS(app)
 def home():
     return "Go to Stream"
 
-def get_browser_cookies():
-    try:
-        # Fetch cookies from Chrome or Firefox dynamically
-        cookies = browser_cookie3.load()
-        return cookies
-    except Exception as e:
-        raise RuntimeError(f"Failed to load browser cookies: {str(e)}")
-        
 @app.route('/stream')    
 def stream_video():
     try:
         # Set up yt-dlp options
-        cookies = get_browser_cookies()
         ydl_opts = {
             'format': 'best',
             'quiet': True,
             'noplaylist': True,
-            'extract_flat': True,  # Extract only the URL without downloading
-            'cookiefile': None,
-            'cookiefile_content': cookies.output(header='', sep='; ') 
+            'extract_flat': True,  # Extract only the URL without down
         }
 
         # Use yt-dlp to fetch the video stream URL
