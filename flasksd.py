@@ -1,4 +1,4 @@
-from flask import Flask, Response, jsonify
+from flask import Flask, Response, jsonify, request  # Ensure request is imported
 from flask_cors import CORS
 import yt_dlp
 import requests
@@ -32,7 +32,7 @@ def check_video_status(url):
 
 @app.route('/check', methods=['GET'])
 def check():
-    url = request.args.get('url')
+    url = request.args.get('url')  # Request object is now imported
     if not url:
         return jsonify({"status": "error", "message": "Missing 'url' parameter"}), 400
 
