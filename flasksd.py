@@ -2,6 +2,7 @@ from flask import Flask, Response
 from flask_cors import CORS
 import yt_dlp
 import requests
+import browser_cookie3
 
 app = Flask(__name__)
 CORS(app)
