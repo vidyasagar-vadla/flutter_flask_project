@@ -9,7 +9,35 @@ CORS(app)
 @app.route('/')
 def home():
     return "Go to Stream"
+def check_video_status(url):
+    options = {
+        'quiet': True,
+        'noplaylist': True,
+    }
 
+    try:
+        with yt_dlp.YoutubeDL(options) as ydl:
+            info = ydl.extract_info(url, download=False)
+            if info.get('is_private'):
+                return {"status": "private", "message": "The video is private."}
+            elif info.get('age_limit') and info['age_limit'] > 0:
+                return {"status": "age_restricted", "message": f"Age limit: {info['age_limit']}+"}
+            elif info.get('availability') == 'unlisted':
+                return {"status": "unlisted", "message": "The video is unlisted."}
+            else:
+                return {"status": "public", "message": "The video is public."}
+    except yt_dlp.utils.DownloadError as e:
+        return {"status": "error", "message": str(e)}
+
+@app.route('/check', methods=['GET'])
+def check():
+    url = request.args.get('url')
+    if not url:
+        return jsonify({"status": "error", "message": "Missing 'url' parameter"}), 400
+
+    result = check_video_status(url)
+    return jsonify(result)
+    
 @app.route('/stream')    
 def stream_video():
     try:
