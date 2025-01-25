@@ -1,14 +1,15 @@
-from flask import Flask, Response,request
+from flask import Flask, Response, jsonify
 from flask_cors import CORS
 import yt_dlp
 import requests
-import browser_cookie3
 
 app = Flask(__name__)
 CORS(app)
+
 @app.route('/')
 def home():
-    return "Go to Stream"
+    return "Go to /stream to stream a video or /check to check the video status."
+
 def check_video_status(url):
     options = {
         'quiet': True,
@@ -38,20 +39,22 @@ def check():
     result = check_video_status(url)
     return jsonify(result)
     
-@app.route('/stream')    
+@app.route('/stream', methods=['GET'])
 def stream_video():
     try:
+        # Set the hardcoded video URL here
+        video_url = 'https://www.youtube.com/watch?v=LNYm40RmRzs'  # Example YouTube URL
+
         # Set up yt-dlp options
         ydl_opts = {
             'format': 'best',
             'quiet': True,
             'noplaylist': True,
-            'extract_flat': True,  # Extract only the URL without down
+            'extract_flat': True,  # Extract only the URL without downloading
         }
 
         # Use yt-dlp to fetch the video stream URL
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            video_url = f'https://www.youtube.com/watch?v=LNYm40RmRzs'
             info_dict = ydl.extract_info(video_url, download=False)
             video_url = info_dict['url']  # Get the direct video URL
 
@@ -59,7 +62,7 @@ def stream_video():
             response = requests.get(video_url, stream=True)
             return Response(response.iter_content(chunk_size=1024), mimetype='video/mp4')
     except Exception as e:
-        return str(e), 404
+        return jsonify({"status": "error", "message": str(e)}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
